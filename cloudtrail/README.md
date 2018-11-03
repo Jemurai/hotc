@@ -1,3 +1,0 @@
-# CloudTrail
-
-TODO: Write
