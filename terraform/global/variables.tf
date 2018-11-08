@@ -1,3 +1,3 @@
 variable "keybase-user" {
-  default = "keybase.abedra"
+  default = "keybase:abedra"
 }
