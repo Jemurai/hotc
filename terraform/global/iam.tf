@@ -24,14 +24,14 @@ resource "aws_iam_login_profile" "example" {
   pgp_key = "${var.keybase-user}"
 }
 
-output "access-key-id" {
+output "example-access-key-id" {
   value = "${aws_iam_access_key.example.id}"
 }
 
-output "secret" {
+output "example-secret-access-key" {
   value = "${aws_iam_access_key.example.encrypted_secret}"
 }
 
-output "password" {
+output "example-password" {
   value = "${aws_iam_user_login_profile.example.encrypted_password}"
 }
