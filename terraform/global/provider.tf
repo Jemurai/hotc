@@ -1,10 +1,10 @@
 provider "aws" {
-  region = "us-east-2"
+  region = "${var.aws_region}"
 }
 
 terraform {
+  // bucket = "<s3_bucket_prefix>tfstate"
   backend "s3" {
-    bucket = "example-tfstate"
     key    = "global/terraform.tfstate"
     region = "us-east-2"
   }

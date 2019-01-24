@@ -1,3 +1,8 @@
+resource "aws_s3_bucket" "audit" {
+  bucket = "${var.bucket_name_prefix}audit"
+  acl    = "private"
+}
+
 data "aws_iam_policy_document" "cloudtrail" {
   statement {
     sid    = "AWSCloudTrailAclCheck"
@@ -9,7 +14,7 @@ data "aws_iam_policy_document" "cloudtrail" {
     }
 
     actions   = ["s3:GetBucketAcl"]
-    resources = ["${aws_s3_bucket.abedra-audit.arn}"]
+    resources = ["${aws_s3_bucket.audit.arn}"]
   }
 
   statement {
@@ -22,7 +27,7 @@ data "aws_iam_policy_document" "cloudtrail" {
     }
 
     actions   = ["s3:PutObject"]
-    resources = ["${aws_s3_bucket.example-audit.arn}/audit/*"]
+    resources = ["${aws_s3_bucket.audit.arn}/${local.cloudtrail_s3_prefix}/*"]
 
     condition {
       test     = "StringEquals"
@@ -34,20 +39,32 @@ data "aws_iam_policy_document" "cloudtrail" {
 }
 
 resource "aws_s3_bucket_policy" "cloudtrail" {
-  bucket = "${aws_s3_bucket.example-audit.bucket}"
+  bucket = "${aws_s3_bucket.audit.bucket}"
   policy = "${data.aws_iam_policy_document.cloudtrail.json}"
 }
 
-resource "aws_s3_bucket" "example-audit" {
-  bucket = "example-audit"
+resource "aws_s3_bucket" "tfstate" {
+  bucket = "${var.bucket_name_prefix}tfstate"
   acl    = "private"
-}
-
-resource "aws_s3_bucket" "example-tfstate" {
-  bucket = "example-tfstate"
-  acl = "private"
 
   versioning {
-      enabled = true
+    enabled = true
   }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "tfstate" {
+  bucket = "${aws_s3_bucket.tfstate.id}"
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
