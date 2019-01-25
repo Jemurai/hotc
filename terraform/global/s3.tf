@@ -1,6 +1,14 @@
 resource "aws_s3_bucket" "audit" {
   bucket = "${var.bucket_name_prefix}audit"
   acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
 
 data "aws_iam_policy_document" "cloudtrail" {
@@ -49,6 +57,15 @@ resource "aws_s3_bucket" "tfstate" {
 
   versioning {
     enabled = true
+  }
+
+  lifecycle_rule {
+    id      = "expire_old_versions"
+    enabled = true
+
+    noncurrent_version_expiration {
+      days = 30
+    }
   }
 
   server_side_encryption_configuration {
