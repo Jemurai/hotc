@@ -13,7 +13,18 @@ function errorCheck {
     fi
 }
 
-for region in $(aws ec2 describe-regions --query "Regions[].RegionName" --output text)
+if [ $# -eq 0 ]
+then
+    echo "No regions provided"
+    echo
+    echo "Usage:"
+    echo "$0 <region_1> [region_2] ... [region_n]"
+    echo
+
+    exit 2
+fi
+
+for region in $*
 do
     echo "Cleaning region ${region}."
 
