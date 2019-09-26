@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 aws s3api list-buckets --query 'Buckets[].Name' | jq -r '.[]' |\
     while read BUCKET
     do
@@ -9,7 +8,7 @@ aws s3api list-buckets --query 'Buckets[].Name' | jq -r '.[]' |\
         if [[ $? -ne 0 ]]
         then
             echo "${BUCKET} does not have SSE enabled"
-            echo -en "\tAttempting to enabled: "
+            echo -en "\tAttempting to enable: "
             aws s3api put-bucket-encryption --bucket $BUCKET --server-side-encryption-configuration '
             {
                 "Rules": [
