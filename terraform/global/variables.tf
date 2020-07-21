@@ -6,3 +6,4 @@ variable "bucket_name_prefix" {
   default     = "example-"
   description = "Prefix added to buckets to avoid global conflicts."
 }
+
