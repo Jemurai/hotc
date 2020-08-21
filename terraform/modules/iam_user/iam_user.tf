@@ -4,11 +4,11 @@ resource "aws_iam_user" "user" {
 }
 
 resource "aws_iam_access_key" "user" {
-  user    = "${aws_iam_user.user.name}"
-  pgp_key = "${var.keybase-user}"
+  user    = aws_iam_user.user.name
+  pgp_key = var.keybase-user
 }
 
-resource "aws_iam_login_profile" "user" {
-  user    = "${aws_iam_user.user.name}"
-  pgp_key = "${var.keybase-user}"
+resource "aws_iam_user_login_profile" "user" {
+  user    = aws_iam_user.user.name
+  pgp_key = var.keybase-user
 }
