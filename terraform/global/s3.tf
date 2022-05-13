@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "cloudtrail" {
     }
 
     actions   = ["s3:GetBucketAcl"]
-    resources = ["${aws_s3_bucket.audit.arn}"]
+    resources = [aws_s3_bucket.audit.arn]
   }
 
   statement {
@@ -47,8 +47,8 @@ data "aws_iam_policy_document" "cloudtrail" {
 }
 
 resource "aws_s3_bucket_policy" "cloudtrail" {
-  bucket = "${aws_s3_bucket.audit.bucket}"
-  policy = "${data.aws_iam_policy_document.cloudtrail.json}"
+  bucket = aws_s3_bucket.audit.bucket
+  policy = data.aws_iam_policy_document.cloudtrail.json
 }
 
 resource "aws_s3_bucket" "tfstate" {
@@ -78,10 +78,11 @@ resource "aws_s3_bucket" "tfstate" {
 }
 
 resource "aws_s3_bucket_public_access_block" "tfstate" {
-  bucket = "${aws_s3_bucket.tfstate.id}"
+  bucket = aws_s3_bucket.tfstate.id
 
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
